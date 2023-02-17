@@ -40,18 +40,28 @@ which cancels the stream.
 // Replace client id and client secret with your own values
 client := ais.NewClient("user@example.com:name", "clientsecret")
 
-stream, err := client.GetAis()
+// A supplied context allows for cancellation of the request, and of the reading of the response stream
+ctx, cancel := context.WithCancel(context.Background())
+defer cancel()
+
+// Execute request
+stream, err := client.GetAisContext(ctx)
 if err != nil {
     panic(err)
 }
 
-dataCh, _, _, err := stream.UnmarshalStream(context.Background())
+dataCh, err := stream.UnmarshalStream()
 if err != nil {
     panic(err)
 }
 
 for aisData := range dataCh {
     fmt.Println(aisData)
+}
+
+// If the channel closes, a supplied error will explain why
+if err := stream.Error(); err != nil {
+	fmt.Println(err)
 }
 ```
 

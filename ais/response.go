@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"reflect"
 	"regexp"
-	"sync"
 	"time"
 )
 
@@ -27,43 +26,46 @@ func (r Response[T]) Unmarshal() (T, error) {
 
 type StreamResponse[T any] struct {
 	*http.Response
+	err error
+	ctx context.Context
 }
 
-func (r StreamResponse[T]) UnmarshalStream(ctx context.Context) (<-chan T, <-chan error, CancelFunc, error) {
+func (r *StreamResponse[T]) Error() error {
+	return r.err
+}
+
+func (r *StreamResponse[T]) UnmarshalStream() (<-chan T, error) {
 	scan := bufio.NewScanner(r.Body)
 	if scan == nil {
-		return nil, nil, nil, errors.New("received nil scanner")
+		return nil, errors.New("received nil scanner")
 	}
 
 	out := make(chan T)
-	done, cancel := makeSignalCh()
-
-	errCh := make(chan error, 1)
 
 	go func() {
 		defer r.Body.Close()
+		defer close(out)
 
 		for {
 			select {
-			case <-done:
-				close(out)
+			case <-r.ctx.Done():
+				r.err = r.ctx.Err()
 				return
-			case <-ctx.Done():
-				cancel()
 			default:
 				success := scan.Scan()
 				if !success {
-					errCh <- errors.New("failure on scan")
+					r.err = errors.New("failure on scan")
+					return
 				}
-
 				if err := scan.Err(); err != nil {
-					errCh <- err
+					r.err = err
+					return
 				}
 
 				var res T
 				if err := json.Unmarshal(scan.Bytes(), &res); err != nil {
-					errCh <- err
-					cancel()
+					r.err = err
+					return
 				} else {
 					out <- res
 				}
@@ -71,42 +73,44 @@ func (r StreamResponse[T]) UnmarshalStream(ctx context.Context) (<-chan T, <-cha
 		}
 	}()
 
-	return out, errCh, cancel, nil
+	return out, nil
 }
 
 type SSEStreamResponse[T any] struct {
 	*http.Response
+	err error
+	ctx context.Context
 }
 
-func (r SSEStreamResponse[T]) UnmarshalStream(ctx context.Context) (<-chan T, <-chan error, CancelFunc, error) {
+func (r *SSEStreamResponse[T]) Error() error {
+	return r.err
+}
+
+func (r *SSEStreamResponse[T]) UnmarshalStream() (<-chan T, error) {
 	scan := bufio.NewScanner(r.Body)
 	if scan == nil {
-		return nil, nil, nil, errors.New("received nil scanner")
+		return nil, errors.New("received nil scanner")
 	}
 
 	out := make(chan T)
-	done, cancel := makeSignalCh()
-
-	errCh := make(chan error, 1)
 
 	go func() {
 		defer r.Body.Close()
+		defer close(out)
 
 		for {
 			select {
-			case <-done:
-				close(out)
+			case <-r.ctx.Done():
+				r.err = r.ctx.Err()
 				return
-			case <-ctx.Done():
-				cancel()
 			default:
 				success := scan.Scan()
 				if !success {
-					errCh <- errors.New("failure on scan")
+					r.err = errors.New("failure on scan")
 				}
 
 				if err := scan.Err(); err != nil {
-					errCh <- err
+					r.err = err
 				}
 
 				var res T
@@ -115,8 +119,8 @@ func (r SSEStreamResponse[T]) UnmarshalStream(ctx context.Context) (<-chan T, <-
 				if errors.Is(err, empty) || errors.Is(err, noMatch) {
 					continue
 				} else if err != nil {
-					errCh <- err
-					cancel()
+					r.err = err
+					return
 				} else {
 					out <- res
 				}
@@ -124,7 +128,7 @@ func (r SSEStreamResponse[T]) UnmarshalStream(ctx context.Context) (<-chan T, <-
 		}
 	}()
 
-	return out, errCh, cancel, nil
+	return out, nil
 }
 
 var (
@@ -502,28 +506,4 @@ type Combined struct {
 
 func (a Combined) IsZero() bool {
 	return reflect.ValueOf(a).IsZero()
-}
-
-// makeSignalCh creates and returns a new buffered channel of type struct{} and a cancel function.
-//
-// The channel is used as a signaling mechanism, where sending a value to the channel signals an event has occurred.
-// Receiving from the channel is used to wait for the event.
-//
-// The cancel function, cancelFunc, is used to close the channel, indicating that no more events will be sent.
-// The function uses a mutex to make sure it is only closed once, even if called concurrently.
-// If the channel has not been closed yet, it closes the channel and sets closed to true.
-func makeSignalCh() (<-chan struct{}, CancelFunc) {
-	mu := sync.Mutex{}
-	closed := false
-	ch := make(chan struct{})
-	cancelFunc := func() {
-		mu.Lock()
-		defer mu.Unlock()
-		if !closed {
-			closed = true
-			close(ch)
-		}
-	}
-
-	return ch, cancelFunc
 }

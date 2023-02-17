@@ -25,7 +25,7 @@ func (c *Client) GetAisContext(ctx context.Context) (StreamResponse[AisMultiple]
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return StreamResponse[AisMultiple]{res}, err
+	return StreamResponse[AisMultiple]{Response: res, ctx: ctx}, err
 }
 
 // PostAis carries out POST against /v1/ais
@@ -46,7 +46,7 @@ func (c *Client) PostAisContext(ctx context.Context, filterInput FilterInput) (S
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return StreamResponse[AisMultiple]{res}, err
+	return StreamResponse[AisMultiple]{Response: res, ctx: ctx}, err
 }
 
 // GetSSEAis carries out GET against /v1/sse/ais
@@ -63,7 +63,7 @@ func (c *Client) GetSSEAisContext(ctx context.Context) (SSEStreamResponse[AisMul
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return SSEStreamResponse[AisMultiple]{res}, err
+	return SSEStreamResponse[AisMultiple]{Response: res, ctx: ctx}, err
 }
 
 func (c *Client) PostSSEAis(filterInput FilterInput) (StreamResponse[AisMultiple], error) {
@@ -83,7 +83,7 @@ func (c *Client) PostSSEAisContext(ctx context.Context, filterInput FilterInput)
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return StreamResponse[AisMultiple]{res}, err
+	return StreamResponse[AisMultiple]{Response: res, ctx: ctx}, err
 }
 
 // GetCombined carries out GET against /v1/combined
@@ -100,7 +100,7 @@ func (c *Client) GetCombinedContext(ctx context.Context) (StreamResponse[Combine
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return StreamResponse[Combined]{res}, err
+	return StreamResponse[Combined]{Response: res, ctx: ctx}, err
 }
 
 // PostCombined carries out POST against /v1/combined
@@ -121,7 +121,7 @@ func (c *Client) PostCombinedContext(ctx context.Context, filterInput CombinedFi
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return StreamResponse[CombinedMultiple]{res}, err
+	return StreamResponse[CombinedMultiple]{Response: res, ctx: ctx}, err
 }
 
 // GetSSECombined carries out GET against /v1/combined
@@ -138,7 +138,7 @@ func (c *Client) GetSSECombinedContext(ctx context.Context) (SSEStreamResponse[C
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return SSEStreamResponse[Combined]{res}, err
+	return SSEStreamResponse[Combined]{Response: res, ctx: ctx}, err
 }
 
 // PostSSECombined carries out POST against /v1/combined
@@ -159,7 +159,7 @@ func (c *Client) PostSSECombinedContext(ctx context.Context, filterInput Combine
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return SSEStreamResponse[CombinedMultiple]{res}, err
+	return SSEStreamResponse[CombinedMultiple]{Response: res, ctx: ctx}, err
 }
 
 type latestAisOption func(queryParams url.Values)
