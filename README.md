@@ -26,7 +26,7 @@ There are two kinds of API endpoint, those which return streaming data, and thos
 They can be recognized by the return types. 
 
 ### Streams 
-A typical streaming endpoint will have a `*StreamResponse` or 
+A typical streaming endpoint will have a `*StreamResponse` or t
 `SSEStreamResponse` return data type, depending on whether the data is streamed via HTTP2 streams or as Server Sent 
 Events. A typical signature is 
 
