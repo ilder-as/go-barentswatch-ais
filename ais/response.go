@@ -15,17 +15,21 @@ import (
 
 type CancelFunc func()
 
-type Response[T any] http.Response
+type Response[T any] struct {
+	*http.Response
+}
 
-func (r *Response[T]) Unmarshal() (T, error) {
+func (r Response[T]) Unmarshal() (T, error) {
 	var obj T
 	defer r.Body.Close()
 	return obj, json.NewDecoder(r.Body).Decode(&obj)
 }
 
-type StreamResponse[T any] http.Response
+type StreamResponse[T any] struct {
+	*http.Response
+}
 
-func (r *StreamResponse[T]) UnmarshalStream(ctx context.Context) (<-chan T, <-chan error, CancelFunc, error) {
+func (r StreamResponse[T]) UnmarshalStream(ctx context.Context) (<-chan T, <-chan error, CancelFunc, error) {
 	scan := bufio.NewScanner(r.Body)
 	if scan == nil {
 		return nil, nil, nil, errors.New("received nil scanner")
@@ -70,9 +74,11 @@ func (r *StreamResponse[T]) UnmarshalStream(ctx context.Context) (<-chan T, <-ch
 	return out, errCh, cancel, nil
 }
 
-type SSEStreamResponse[T any] http.Response
+type SSEStreamResponse[T any] struct {
+	*http.Response
+}
 
-func (r *SSEStreamResponse[T]) UnmarshalStream(ctx context.Context) (<-chan T, <-chan error, CancelFunc, error) {
+func (r SSEStreamResponse[T]) UnmarshalStream(ctx context.Context) (<-chan T, <-chan error, CancelFunc, error) {
 	scan := bufio.NewScanner(r.Body)
 	if scan == nil {
 		return nil, nil, nil, errors.New("received nil scanner")

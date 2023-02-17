@@ -7,10 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project uses [Go's conventions for module version numbering](https://go.dev/doc/modules/version-numbers).
 
 ## [Unreleased]
-(Nothing)
+### Changed
+- Response data types now embed `*http.Response` instead of type aliasing it, for a simplicity and extensibility.
 
 ## [0.0.1] - 2023-02-17
-
 ### Added
 - Implementation of Barentswatch HTTP API as [documented](https://live.ais.barentswatch.net/index.html#/), both streams and queries.
 - Go-native data types for API schemas

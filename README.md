@@ -26,12 +26,11 @@ There are two kinds of API endpoint, those which return streaming data, and thos
 They can be recognized by the return types. 
 
 ### Streams 
-A typical streaming endpoint will have a `*StreamResponse` or t
-`SSEStreamResponse` return data type, depending on whether the data is streamed via HTTP2 streams or as Server Sent 
-Events. A typical signature is 
+A typical streaming endpoint will have a `StreamResponse[T]` or `SSEStreamResponse[T]` return data type, depending on 
+whether the data is streamed via HTTP2 streams or as Server Sent Events. A typical signature is 
 
 ```go
-func (c *Client) GetAis() (*StreamResponse[AisMultiple], error) { // ... }
+func (c *Client) GetAis() (StreamResponse[AisMultiple], error) { // ... }
 ```
 
 A stream response has an `UnmarshalStream` method which returns channels for data, errors, and a cancellation function
@@ -58,10 +57,10 @@ for aisData := range dataCh {
 
 ### Queries 
 Query responses are those API calls which do not return streams. These calls return simple data types or result sets 
-as slices of simple data types, and can be recognized by their `*Response` return type. E.g. 
+as slices of simple data types, and can be recognized by their `Response[T]` return type. E.g. 
 
 ```go
-func (c *Client) GetLatestAis(opts ...latestAisOption) (*Response[[]AisMultiple], error) { // ... }
+func (c *Client) GetLatestAis(opts ...latestAisOption) (Response[[]AisMultiple], error) { // ... }
 ```
 
 These responses have an `Unmarshal` method which unmarshals the data to a native data type of the correct form.
