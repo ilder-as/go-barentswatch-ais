@@ -15,18 +15,22 @@ type Client struct {
 	httpClient *http.Client
 }
 
-func NewClient(clientId string, clientSecret string) *Client {
-	urls := DefaultURLs()
+func NewClient(clientId string, clientSecret string, urls ...URLs) *Client {
+	u := DefaultURLs()
+
+	if len(urls) > 0 {
+		u = urls[0]
+	}
 	oauthConfig := clientcredentials.Config{
 		ClientID:     clientId,
 		ClientSecret: clientSecret,
-		TokenURL:     DefaultURLs().OAuthToken(),
+		TokenURL:     u.OAuthToken(),
 		Scopes:       []string{"ais"},
 	}
 	httpClient := oauthConfig.Client(context.Background())
 
 	return &Client{
-		urls:       urls,
+		urls:       u,
 		httpClient: httpClient,
 	}
 }

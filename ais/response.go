@@ -12,6 +12,12 @@ import (
 	"time"
 )
 
+var eof = errors.New("EOF")
+
+func IsEOF(err error) bool {
+	return errors.Is(err, eof)
+}
+
 type CancelFunc func()
 
 type Response[T any] struct {
@@ -54,11 +60,11 @@ func (r *StreamResponse[T]) UnmarshalStream() (<-chan T, error) {
 			default:
 				success := scan.Scan()
 				if !success {
-					r.err = errors.New("failure on scan")
-					return
-				}
-				if err := scan.Err(); err != nil {
-					r.err = err
+					if err := scan.Err(); err != nil {
+						r.err = err
+					} else {
+						r.err = eof
+					}
 					return
 				}
 
@@ -106,11 +112,12 @@ func (r *SSEStreamResponse[T]) UnmarshalStream() (<-chan T, error) {
 			default:
 				success := scan.Scan()
 				if !success {
-					r.err = errors.New("failure on scan")
-				}
-
-				if err := scan.Err(); err != nil {
-					r.err = err
+					if err := scan.Err(); err != nil {
+						r.err = err
+					} else {
+						r.err = eof
+					}
+					return
 				}
 
 				var res T
