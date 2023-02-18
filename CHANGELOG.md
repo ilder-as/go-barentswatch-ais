@@ -10,6 +10,7 @@ This project uses [Go's conventions for module version numbering](https://go.dev
 ### Added 
 - EOF error which signifies end of stream for `ResponseStream` and `SSEResponseStream` when reading them using `UnmarshalStream`, as well as an `IsEOF` function to check whether an error is an EOF error.
 - Tests
+- CONTRIBUTING.md
  
 ### Changed
 - Response data types now embed `*http.Response` instead of type aliasing it, for a simplicity and extensibility.
