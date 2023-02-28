@@ -223,21 +223,6 @@ func (a *AisMultiple) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// IsPosition is true iff the AisMultiple message is of type Position
-func (a AisMultiple) IsPosition() bool {
-	return a.Type == responsetype.Position
-}
-
-// IsAton is true iff the AisMultiple message is of type Aton
-func (a AisMultiple) IsAton() bool {
-	return a.Type == responsetype.Aton
-}
-
-// IsStaticdata is true iff the AisMultiple message is of type Staticdata
-func (a AisMultiple) IsStaticdata() bool {
-	return a.Type == responsetype.Staticdata
-}
-
 // IsZero is true iff the receiver is a default-valued AisMultiple struct.
 func (a AisMultiple) IsZero() bool {
 	return reflect.ValueOf(a).IsZero()

@@ -9,10 +9,11 @@ This project uses [Go's conventions for module version numbering](https://go.dev
 ## [Unreleased]
 ### Added 
 - EOF error which signifies end of stream for `StreamResponse` when using `UnmarshalStream`, as well as an `IsEOF` function to check whether an error is an EOF error.
-- Tests
-- CONTRIBUTING.md
+- Added tests.
+- Added CONTRIBUTING.md.
  
 ### Changed
+- `IsPosition`, `IsAton`, `IsStaticdata` removed as methods from `AisMultiple` to simplify package API, as they can easily be replaced by checking `AisMultiple.Type`.
 - The `SSEStreamResponse[T]` data type is merged into and replaced by the `StreamResponse[T]` data type.
 - The `Combined` data type is replaced by `CombinedSimpleJson` since these are identical.
 - `ModelType` and `ResponseType` as well as their associated constants are moved from the ais package to dedicated packages, in line with other similar data types. 
@@ -27,8 +28,8 @@ This project uses [Go's conventions for module version numbering](https://go.dev
 ## [0.0.1] - 2023-02-17
 ### Added
 - Implementation of Barentswatch HTTP API as [documented](https://live.ais.barentswatch.net/index.html#/), both streams and queries.
-- Go-native data types for API schemas
-- Country code, ship type and model format data types, with additional facility methods for human-readableness
+- Go-native data types for API schemas.
+- Country code, ship type and model format data types, with additional facility methods for human-readableness.
 - License, changelog and readme files.
  
 ###  Fixed
