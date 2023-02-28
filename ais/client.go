@@ -15,6 +15,11 @@ type Client struct {
 	httpClient *http.Client
 }
 
+// NewClient creates a new Client.
+//
+// It must be called with the user's OAuth client ID and client secret, which can be obtained from Barentswatch.
+// Optionally you can supply a single set of URLs to override the default URLs for the API endpoints.
+// Do not supply more than zero or one set of URLs.
 func NewClient(clientId string, clientSecret string, urls ...URLs) *Client {
 	u := DefaultURLs()
 

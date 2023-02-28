@@ -30,7 +30,12 @@ client := ais.NewClient("user@example.com:name", "clientsecret")
 
 ## Consuming the API
 There are two kinds of API endpoint, those which return streaming data, and those which return fixed result sets. 
-They can be recognized by the return types. 
+They can be recognized by the return types, `Response[T]` and `StreamResponse[T]`, where `T` is a struct which varies 
+case by case, dependent on what kind of data Barentswatch returns. 
+
+There are two instances of each API method, one called `MethodName`, and one called `MethodNameContext`, e.g. `GetAis` 
+and `GetAisContext`. The latter method allow the caller to supply a `context.Context` object for cancellation,
+whereas the former does not. In fact, the former method invokes the second with a new `context.Background()`.
 
 ### Streams 
 A streaming endpoint will have a `StreamResponse[T]` return data type. The underlying stream can be a simple HTTP2 stream
