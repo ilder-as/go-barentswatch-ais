@@ -2,8 +2,9 @@ package ais
 
 import (
 	"context"
-	"golang.org/x/oauth2/clientcredentials"
 	"net/http"
+
+	"golang.org/x/oauth2/clientcredentials"
 )
 
 // Client is the main workhorse of the http package. It contains configurations for

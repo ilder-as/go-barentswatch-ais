@@ -1,12 +1,13 @@
 package ais
 
 import (
+	"time"
+
 	"github.com/ilder-as/go-barentswatch-ais/countrycode"
 	"github.com/ilder-as/go-barentswatch-ais/modelformat"
 	"github.com/ilder-as/go-barentswatch-ais/modeltype"
 	"github.com/ilder-as/go-barentswatch-ais/shiptype"
 	geojson "github.com/paulmach/go.geojson"
-	"time"
 )
 
 // The schema is available at https://live.ais.barentswatch.net/index.html, but note that some discrepancies between

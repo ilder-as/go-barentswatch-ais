@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"net/http"
+
 	"github.com/ilder-as/go-barentswatch-ais/ais/option"
 	geojson "github.com/paulmach/go.geojson"
-	"net/http"
 )
 
 // GetAis carries out GET against /v1/ais

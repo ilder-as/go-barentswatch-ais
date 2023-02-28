@@ -6,11 +6,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/ilder-as/go-barentswatch-ais/responsetype"
 	"net/http"
 	"reflect"
 	"regexp"
 	"time"
+
+	"github.com/ilder-as/go-barentswatch-ais/responsetype"
 )
 
 type StreamType int

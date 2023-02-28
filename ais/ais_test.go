@@ -4,10 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/ilder-as/go-barentswatch-ais/ais"
-	"github.com/ilder-as/go-barentswatch-ais/ais/option"
-	"github.com/ilder-as/go-barentswatch-ais/responsetype"
-	"golang.org/x/oauth2"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -15,6 +11,11 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/ilder-as/go-barentswatch-ais/ais"
+	"github.com/ilder-as/go-barentswatch-ais/ais/option"
+	"github.com/ilder-as/go-barentswatch-ais/responsetype"
+	"golang.org/x/oauth2"
 )
 
 func oauthSpoofMW(handlerFunc http.HandlerFunc) http.HandlerFunc {
