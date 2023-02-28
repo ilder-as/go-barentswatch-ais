@@ -16,6 +16,7 @@ This project uses [Go's conventions for module version numbering](https://go.dev
 - Response data types now embed `*http.Response` instead of type aliasing it, for a simplicity and extensibility.
 - Signatures of `UnmarshalStream` on `StreamResponse` and `SSEStreamResponse` have changed substantially. They no longer supply an error channel, errors are instead provided when the data channel closes, and can be checked with the `Error()` method. They also do not return cancellation functions anymore, cancellation is instead achieved by the user cancelling the request's context. 
 - `NewClient` now optionally takes a set of URLs for the HTTP endpoints.
+- Query options are moved to new options package.
 
 ### Fixed
 - Incorrect query parameters generated in HTTP request in GetLatestAIS/GetLatestAISContext and GetLatestCombined/GetLatestCombinedContext

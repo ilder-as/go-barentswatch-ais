@@ -4,10 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"github.com/ilder-as/go-barentswatch-ais/ais/option"
 	geojson "github.com/paulmach/go.geojson"
 	"net/http"
-	"net/url"
-	"time"
 )
 
 // GetAis carries out GET against /v1/ais
@@ -161,32 +160,22 @@ func (c *Client) PostSSECombinedContext(ctx context.Context, filterInput Combine
 	return SSEStreamResponse[CombinedMultiple]{Response: res, ctx: ctx}, err
 }
 
-type latestAisOption func(queryParams url.Values)
-
-func Since(t time.Time) latestAisOption {
-	return func(queryParams url.Values) {
-		queryParams.Set("since", t.Format(time.RFC3339))
-	}
-}
-
 // GetLatestAis carries out GET against /v1/latest/ais
-func (c *Client) GetLatestAis(opts ...latestAisOption) (Response[[]AisMultiple], error) {
+func (c *Client) GetLatestAis(opts ...option.Option) (Response[[]AisMultiple], error) {
 	return c.GetLatestAisContext(context.Background(), opts...)
 }
 
 // GetLatestAisContext carries out GET against /v1/latest/ais with a context for cancellation.
-func (c *Client) GetLatestAisContext(ctx context.Context, opts ...latestAisOption) (Response[[]AisMultiple], error) {
+func (c *Client) GetLatestAisContext(ctx context.Context, opts ...option.Option) (Response[[]AisMultiple], error) {
 	req, err := http.NewRequest("GET", c.urls.LatestAIS(), nil)
 	if err != nil {
 		return Response[[]AisMultiple]{}, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
-	params := req.URL.Query()
 	for _, opt := range opts {
-		opt(params)
+		opt(req)
 	}
-	req.URL.RawQuery = params.Encode()
 	res, err := c.httpClient.Do(req)
 	return Response[[]AisMultiple]{res}, err
 }
@@ -213,23 +202,21 @@ func (c *Client) PostLatestAisContext(ctx context.Context, filter LatestAisFilte
 }
 
 // GetLatestCombined carries out GET against /v1/latest/combined
-func (c *Client) GetLatestCombined(opts ...latestAisOption) (Response[[]Combined], error) {
+func (c *Client) GetLatestCombined(opts ...option.Option) (Response[[]Combined], error) {
 	return c.GetLatestCombinedContext(context.Background(), opts...)
 }
 
 // GetLatestCombinedContext carries out GET against /v1/latest/combined with a context for cancellation.
-func (c *Client) GetLatestCombinedContext(ctx context.Context, opts ...latestAisOption) (Response[[]Combined], error) {
+func (c *Client) GetLatestCombinedContext(ctx context.Context, opts ...option.Option) (Response[[]Combined], error) {
 	req, err := http.NewRequest("GET", c.urls.LatestCombined(), nil)
 	if err != nil {
 		return Response[[]Combined]{}, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
-	params := req.URL.Query()
 	for _, opt := range opts {
-		opt(params)
+		opt(req)
 	}
-	req.URL.RawQuery = params.Encode()
 	res, err := c.httpClient.Do(req)
 	return Response[[]Combined]{res}, err
 }
