@@ -3,6 +3,7 @@ package ais
 import (
 	"github.com/ilder-as/go-barentswatch-ais/countrycode"
 	"github.com/ilder-as/go-barentswatch-ais/modelformat"
+	"github.com/ilder-as/go-barentswatch-ais/modeltype"
 	"github.com/ilder-as/go-barentswatch-ais/shiptype"
 	geojson "github.com/paulmach/go.geojson"
 	"time"
@@ -27,7 +28,7 @@ type CombinedFilterInput struct {
 	MMSI         *int                      `json:"mmsi"`
 	ShipTypes    []shiptype.ShipType       `json:"shipTypes"`
 	CountryCodes []countrycode.CountryCode `json:"countryCodes"`
-	ModelType    ModelType                 `json:"modelType"`
+	ModelType    modeltype.ModelType       `json:"modelType"`
 	ModelFormat  modelformat.ModelFormat   `json:"modelFormat"`
 	Downsample   bool                      `json:"downsample"`
 }
@@ -59,14 +60,6 @@ type LatestAisFilterInput struct {
 	IncludeSafetyRelated         bool                      `json:"includeSafetyRelated"`
 	IncludeBinaryBroadcastMetHyd bool                      `json:"includeBinaryBroadcastMetHyd"`
 }
-
-// ModelType is Ais.Shared.Models.Enums.ModelType
-type ModelType string
-
-const (
-	ModelTypeSimple ModelType = "Simple"
-	ModelTypeFull   ModelType = "Full"
-)
 
 // ApiError is an error supplied by the API.
 //
