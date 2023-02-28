@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project uses [Go's conventions for module version numbering](https://go.dev/doc/modules/version-numbers).
 
 ## [Unreleased]
+(Nothing)
+
+## [0.0.2] - 2023-02-28
 ### Added 
 - EOF error which signifies end of stream for `StreamResponse` when using `UnmarshalStream`, as well as an `IsEOF` function to check whether an error is an EOF error.
 - Added tests.
@@ -36,5 +39,6 @@ This project uses [Go's conventions for module version numbering](https://go.dev
 ###  Fixed
 - Discrepancies between published swagger documentation and actual API behavior adjusted for, and verified in private communication with API developers.
 
-[unreleased]: https://github.com/ilder-as/go-barentswatch-ais/compare/v0.0.1...HEAD
+[unreleased]: https://github.com/ilder-as/go-barentswatch-ais/compare/v0.0.2...HEAD
+[0.0.2]: https://github.com/ilder-as/go-barentswatch-ais/releases/tag/v0.0.2
 [0.0.1]: https://github.com/ilder-as/go-barentswatch-ais/releases/tag/v0.0.1
