@@ -544,20 +544,3 @@ type CombinedSimpleGeojson struct {
 func (a CombinedSimpleGeojson) IsZero() bool {
 	return reflect.ValueOf(a).IsZero()
 }
-
-type Combined struct {
-	CourseOverGround *float64  `json:"courseOverGround"`
-	Latitude         *float64  `json:"latitude"`
-	Longitude        *float64  `json:"longitude"`
-	Name             string    `json:"name"`
-	RateOfTurn       *float64  `json:"rateOfTurn"`
-	ShipType         *int      `json:"shipType"`
-	SpeedOverGround  *float64  `json:"speedOverGround"`
-	TrueHeading      *int      `json:"trueHeading"`
-	Mmsi             int       `json:"mmsi"`
-	Msgtime          time.Time `json:"msgtime"`
-}
-
-func (a Combined) IsZero() bool {
-	return reflect.ValueOf(a).IsZero()
-}

@@ -85,20 +85,20 @@ func (c *Client) PostSSEAisContext(ctx context.Context, filterInput FilterInput)
 }
 
 // GetCombined carries out GET against /v1/combined
-func (c *Client) GetCombined() (StreamResponse[Combined], error) {
+func (c *Client) GetCombined() (StreamResponse[CombinedSimpleJson], error) {
 	return c.GetCombinedContext(context.Background())
 }
 
 // GetCombinedContext carries out GET against /v1/combined with a context for cancellation.
-func (c *Client) GetCombinedContext(ctx context.Context) (StreamResponse[Combined], error) {
+func (c *Client) GetCombinedContext(ctx context.Context) (StreamResponse[CombinedSimpleJson], error) {
 	req, err := http.NewRequest("GET", c.urls.Combined(), nil)
 	if err != nil {
-		return StreamResponse[Combined]{}, err
+		return StreamResponse[CombinedSimpleJson]{}, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return StreamResponse[Combined]{Response: res, ctx: ctx, streamType: Simple}, err
+	return StreamResponse[CombinedSimpleJson]{Response: res, ctx: ctx, streamType: Simple}, err
 }
 
 // PostCombined carries out POST against /v1/combined
@@ -123,20 +123,20 @@ func (c *Client) PostCombinedContext(ctx context.Context, filterInput CombinedFi
 }
 
 // GetSSECombined carries out GET against /v1/combined
-func (c *Client) GetSSECombined() (StreamResponse[Combined], error) {
+func (c *Client) GetSSECombined() (StreamResponse[CombinedSimpleJson], error) {
 	return c.GetSSECombinedContext(context.Background())
 }
 
 // GetSSECombinedContext carries out GET against /v1/combined with a context for cancellation.
-func (c *Client) GetSSECombinedContext(ctx context.Context) (StreamResponse[Combined], error) {
+func (c *Client) GetSSECombinedContext(ctx context.Context) (StreamResponse[CombinedSimpleJson], error) {
 	req, err := http.NewRequest("GET", c.urls.SSECombined(), nil)
 	if err != nil {
-		return StreamResponse[Combined]{}, err
+		return StreamResponse[CombinedSimpleJson]{}, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return StreamResponse[Combined]{Response: res, ctx: ctx, streamType: SSE}, err
+	return StreamResponse[CombinedSimpleJson]{Response: res, ctx: ctx, streamType: SSE}, err
 }
 
 // PostSSECombined carries out POST against /v1/combined
@@ -202,15 +202,15 @@ func (c *Client) PostLatestAisContext(ctx context.Context, filter LatestAisFilte
 }
 
 // GetLatestCombined carries out GET against /v1/latest/combined
-func (c *Client) GetLatestCombined(opts ...option.Option) (Response[[]Combined], error) {
+func (c *Client) GetLatestCombined(opts ...option.Option) (Response[[]CombinedSimpleJson], error) {
 	return c.GetLatestCombinedContext(context.Background(), opts...)
 }
 
 // GetLatestCombinedContext carries out GET against /v1/latest/combined with a context for cancellation.
-func (c *Client) GetLatestCombinedContext(ctx context.Context, opts ...option.Option) (Response[[]Combined], error) {
+func (c *Client) GetLatestCombinedContext(ctx context.Context, opts ...option.Option) (Response[[]CombinedSimpleJson], error) {
 	req, err := http.NewRequest("GET", c.urls.LatestCombined(), nil)
 	if err != nil {
-		return Response[[]Combined]{}, err
+		return Response[[]CombinedSimpleJson]{}, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
@@ -218,7 +218,7 @@ func (c *Client) GetLatestCombinedContext(ctx context.Context, opts ...option.Op
 		opt(req)
 	}
 	res, err := c.httpClient.Do(req)
-	return Response[[]Combined]{res}, err
+	return Response[[]CombinedSimpleJson]{res}, err
 }
 
 // GetOpenAisArea carries out GET against /v1/openaisarea with a context for cancellation.
