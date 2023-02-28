@@ -5,9 +5,8 @@ live data from Automatic Identification Systems (AIS) from marine vessels along 
 
 This Go API seeks to make it easy to ingest and use these data for further processing. The API is purposefully designed 
 as a thin layer above the HTTP API, to make it easier to keep the implementation synchronized with upstream changes. 
-This means that we leak many abstractions, like implementing data streams which are otherwise identical multiple times, 
-if they are accessible through different protocols from the server. This happens e.g. when the same data stream is accessible 
-both as simple streams of JSON objects and as Server-Sent Events. 
+This means that we e.g. sometimes implement endpoints whose supplied data are otherwise identical to each other 
+whenever the HTTP API has endpoints with identical data but differences in carrier protocol or exchange format. 
 
 ## About Ilder Open Source
 This project is proudly supported by [Ilder AS](https://ilder.no), a Norway-based software and IoT company.
@@ -34,14 +33,14 @@ There are two kinds of API endpoint, those which return streaming data, and thos
 They can be recognized by the return types. 
 
 ### Streams 
-A typical streaming endpoint will have a `StreamResponse[T]` or `SSEStreamResponse[T]` return data type, depending on 
-whether the data is streamed via HTTP2 streams or as Server Sent Events. A typical signature is 
+A streaming endpoint will have a `StreamResponse[T]` return data type. The underlying stream can be a simple HTTP2 stream
+or Server Sent Events (SSE). A typical signature is 
 
 ```go
 func (c *Client) GetAis() (StreamResponse[AisMultiple], error) { // ... }
 ```
 
-A stream response has an `UnmarshalStream` method which returns channels for data, errors, and a cancellation function
+A `StreamResponse` has an `UnmarshalStream` method which returns channels for data, errors, and a cancellation function
 which cancels the stream.
 
 ```go
@@ -74,14 +73,14 @@ if err := stream.Error(); err != nil {
 ```
 
 ### Queries 
-Query responses are those API calls which do not return streams. These calls return simple data types or result sets 
-as slices of simple data types, and can be recognized by their `Response[T]` return type. E.g. 
+Query responses are those API calls which have a `Response[T]` return type. These calls return simple data types or result sets 
+as slices of simple data types. E.g. 
 
 ```go
 func (c *Client) GetLatestAis(opts ...latestAisOption) (Response[[]AisMultiple], error) { // ... }
 ```
 
-These responses have an `Unmarshal` method which unmarshals the data to a native data type of the correct form.
+These responses have an `Unmarshal` method which unmarshals the data into the supplied data type `T`, like `[]AisMultiple` in the example above.
 
 ```go
 // Replace client id and client secret with your own values

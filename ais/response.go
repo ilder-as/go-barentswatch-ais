@@ -12,6 +12,14 @@ import (
 	"time"
 )
 
+type StreamType int
+
+const (
+	None StreamType = iota
+	Simple
+	SSE
+)
+
 var eof = errors.New("EOF")
 
 func IsEOF(err error) bool {
@@ -32,15 +40,16 @@ func (r Response[T]) Unmarshal() (T, error) {
 
 type StreamResponse[T any] struct {
 	*http.Response
-	err error
-	ctx context.Context
+	streamType StreamType
+	err        error
+	ctx        context.Context
 }
 
 func (r *StreamResponse[T]) Error() error {
 	return r.err
 }
 
-func (r *StreamResponse[T]) UnmarshalStream() (<-chan T, error) {
+func (r *StreamResponse[T]) unmarshalDefault() (<-chan T, error) {
 	scan := bufio.NewScanner(r.Body)
 	if scan == nil {
 		return nil, errors.New("received nil scanner")
@@ -82,17 +91,7 @@ func (r *StreamResponse[T]) UnmarshalStream() (<-chan T, error) {
 	return out, nil
 }
 
-type SSEStreamResponse[T any] struct {
-	*http.Response
-	err error
-	ctx context.Context
-}
-
-func (r *SSEStreamResponse[T]) Error() error {
-	return r.err
-}
-
-func (r *SSEStreamResponse[T]) UnmarshalStream() (<-chan T, error) {
+func (r *StreamResponse[T]) unmarshalSSE() (<-chan T, error) {
 	scan := bufio.NewScanner(r.Body)
 	if scan == nil {
 		return nil, errors.New("received nil scanner")
@@ -136,6 +135,17 @@ func (r *SSEStreamResponse[T]) UnmarshalStream() (<-chan T, error) {
 	}()
 
 	return out, nil
+}
+
+func (r *StreamResponse[T]) UnmarshalStream() (<-chan T, error) {
+	switch r.streamType {
+	case Simple:
+		return r.unmarshalDefault()
+	case SSE:
+		return r.unmarshalSSE()
+	default:
+		return nil, errors.New("unknown stream type")
+	}
 }
 
 var (

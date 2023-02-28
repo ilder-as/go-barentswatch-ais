@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ilder-as/go-barentswatch-ais/ais"
+	"github.com/ilder-as/go-barentswatch-ais/ais/option"
 	"golang.org/x/oauth2"
 	"io"
 	"net/http"
@@ -395,7 +396,7 @@ func TestClient_GetLatestAis(t *testing.T) {
 
 	client := ais.NewClient("", "", urls)
 
-	res, err := client.GetLatestAis(ais.Since(time.Now()))
+	res, err := client.GetLatestAis(option.Since(time.Now()))
 	if err != nil {
 		t.Fatal(err)
 	}

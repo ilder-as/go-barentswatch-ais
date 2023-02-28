@@ -23,7 +23,7 @@ func (c *Client) GetAisContext(ctx context.Context) (StreamResponse[AisMultiple]
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return StreamResponse[AisMultiple]{Response: res, ctx: ctx}, err
+	return StreamResponse[AisMultiple]{Response: res, ctx: ctx, streamType: Simple}, err
 }
 
 // PostAis carries out POST against /v1/ais
@@ -44,24 +44,24 @@ func (c *Client) PostAisContext(ctx context.Context, filterInput FilterInput) (S
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return StreamResponse[AisMultiple]{Response: res, ctx: ctx}, err
+	return StreamResponse[AisMultiple]{Response: res, ctx: ctx, streamType: Simple}, err
 }
 
 // GetSSEAis carries out GET against /v1/sse/ais
-func (c *Client) GetSSEAis() (SSEStreamResponse[AisMultiple], error) {
+func (c *Client) GetSSEAis() (StreamResponse[AisMultiple], error) {
 	return c.GetSSEAisContext(context.Background())
 }
 
 // GetSSEAisContext carries out GET against /v1/sse/ais with a context for cancellation.
-func (c *Client) GetSSEAisContext(ctx context.Context) (SSEStreamResponse[AisMultiple], error) {
+func (c *Client) GetSSEAisContext(ctx context.Context) (StreamResponse[AisMultiple], error) {
 	req, err := http.NewRequest("GET", c.urls.SSEAIS(), nil)
 	if err != nil {
-		return SSEStreamResponse[AisMultiple]{}, err
+		return StreamResponse[AisMultiple]{}, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return SSEStreamResponse[AisMultiple]{Response: res, ctx: ctx}, err
+	return StreamResponse[AisMultiple]{Response: res, ctx: ctx, streamType: SSE}, err
 }
 
 func (c *Client) PostSSEAis(filterInput FilterInput) (StreamResponse[AisMultiple], error) {
@@ -81,7 +81,7 @@ func (c *Client) PostSSEAisContext(ctx context.Context, filterInput FilterInput)
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return StreamResponse[AisMultiple]{Response: res, ctx: ctx}, err
+	return StreamResponse[AisMultiple]{Response: res, ctx: ctx, streamType: Simple}, err
 }
 
 // GetCombined carries out GET against /v1/combined
@@ -98,7 +98,7 @@ func (c *Client) GetCombinedContext(ctx context.Context) (StreamResponse[Combine
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return StreamResponse[Combined]{Response: res, ctx: ctx}, err
+	return StreamResponse[Combined]{Response: res, ctx: ctx, streamType: Simple}, err
 }
 
 // PostCombined carries out POST against /v1/combined
@@ -119,45 +119,45 @@ func (c *Client) PostCombinedContext(ctx context.Context, filterInput CombinedFi
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return StreamResponse[CombinedMultiple]{Response: res, ctx: ctx}, err
+	return StreamResponse[CombinedMultiple]{Response: res, ctx: ctx, streamType: Simple}, err
 }
 
 // GetSSECombined carries out GET against /v1/combined
-func (c *Client) GetSSECombined() (SSEStreamResponse[Combined], error) {
+func (c *Client) GetSSECombined() (StreamResponse[Combined], error) {
 	return c.GetSSECombinedContext(context.Background())
 }
 
 // GetSSECombinedContext carries out GET against /v1/combined with a context for cancellation.
-func (c *Client) GetSSECombinedContext(ctx context.Context) (SSEStreamResponse[Combined], error) {
+func (c *Client) GetSSECombinedContext(ctx context.Context) (StreamResponse[Combined], error) {
 	req, err := http.NewRequest("GET", c.urls.SSECombined(), nil)
 	if err != nil {
-		return SSEStreamResponse[Combined]{}, err
+		return StreamResponse[Combined]{}, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return SSEStreamResponse[Combined]{Response: res, ctx: ctx}, err
+	return StreamResponse[Combined]{Response: res, ctx: ctx, streamType: SSE}, err
 }
 
 // PostSSECombined carries out POST against /v1/combined
-func (c *Client) PostSSECombined(filterInput CombinedFilterInput) (SSEStreamResponse[CombinedMultiple], error) {
+func (c *Client) PostSSECombined(filterInput CombinedFilterInput) (StreamResponse[CombinedMultiple], error) {
 	return c.PostSSECombinedContext(context.Background(), filterInput)
 }
 
 // PostSSECombinedContext carries out POST against /v1/combined with a context for cancellation.
-func (c *Client) PostSSECombinedContext(ctx context.Context, filterInput CombinedFilterInput) (SSEStreamResponse[CombinedMultiple], error) {
+func (c *Client) PostSSECombinedContext(ctx context.Context, filterInput CombinedFilterInput) (StreamResponse[CombinedMultiple], error) {
 	body := &bytes.Buffer{}
 	if err := json.NewEncoder(body).Encode(filterInput); err != nil {
-		return SSEStreamResponse[CombinedMultiple]{}, err
+		return StreamResponse[CombinedMultiple]{}, err
 	}
 	req, err := http.NewRequest("POST", c.urls.SSECombined(), body)
 	if err != nil {
-		return SSEStreamResponse[CombinedMultiple]{}, err
+		return StreamResponse[CombinedMultiple]{}, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
 	res, err := c.httpClient.Do(req)
-	return SSEStreamResponse[CombinedMultiple]{Response: res, ctx: ctx}, err
+	return StreamResponse[CombinedMultiple]{Response: res, ctx: ctx, streamType: SSE}, err
 }
 
 // GetLatestAis carries out GET against /v1/latest/ais

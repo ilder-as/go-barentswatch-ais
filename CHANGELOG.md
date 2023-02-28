@@ -8,11 +8,12 @@ This project uses [Go's conventions for module version numbering](https://go.dev
 
 ## [Unreleased]
 ### Added 
-- EOF error which signifies end of stream for `ResponseStream` and `SSEResponseStream` when reading them using `UnmarshalStream`, as well as an `IsEOF` function to check whether an error is an EOF error.
+- EOF error which signifies end of stream for `StreamResponse` when using `UnmarshalStream`, as well as an `IsEOF` function to check whether an error is an EOF error.
 - Tests
 - CONTRIBUTING.md
  
 ### Changed
+- The `SSEStreamResponse[T]` data type is merged into and replaced by the `StreamResponse[T]` data type.
 - Response data types now embed `*http.Response` instead of type aliasing it, for a simplicity and extensibility.
 - Signatures of `UnmarshalStream` on `StreamResponse` and `SSEStreamResponse` have changed substantially. They no longer supply an error channel, errors are instead provided when the data channel closes, and can be checked with the `Error()` method. They also do not return cancellation functions anymore, cancellation is instead achieved by the user cancelling the request's context. 
 - `NewClient` now optionally takes a set of URLs for the HTTP endpoints.
