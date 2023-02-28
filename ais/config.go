@@ -9,9 +9,9 @@ type config struct {
 
 type ClientOption func(*config)
 
-func SetResourceURLs(uris URLs) ClientOption {
+func SetResourceURLs(urls URLs) ClientOption {
 	return func(conf *config) {
-		conf.URLs = uris
+		conf.URLs = urls
 	}
 }
 
