@@ -412,20 +412,20 @@ func (c CombinedMultiple) AsSimpleJson() CombinedSimpleJson {
 	return c.CombinedSimpleJson
 }
 
-// AsFullJson returns the underlying CombinedSimpleJson response data if the response is of the correct type,
-// and a zero (default-valued) CombinedSimpleJson struct otherwise.
+// AsFullJson returns the underlying CombinedFullJson response data if the response is of the correct type,
+// and a zero (default-valued) CombinedFullJson struct otherwise.
 func (c CombinedMultiple) AsFullJson() CombinedFullJson {
 	return c.CombinedFullJson
 }
 
-// AsSimpleGeojson returns the underlying CombinedSimpleJson response data if the response is of the correct type,
-// and a zero (default-valued) CombinedSimpleJson struct otherwise.
+// AsSimpleGeojson returns the underlying CombinedSimpleGeojson response data if the response is of the correct type,
+// and a zero (default-valued) CombinedSimpleGeojson struct otherwise.
 func (c CombinedMultiple) AsSimpleGeojson() CombinedSimpleGeojson {
 	return c.CombinedSimpleGeojson
 }
 
-// AsFullGeojson returns the underlying CombinedSimpleJson response data if the response is of the correct type,
-// and a zero (default-valued) CombinedSimpleJson struct otherwise.
+// AsFullGeojson returns the underlying CombinedFullGeojson response data if the response is of the correct type,
+// and a zero (default-valued) CombinedFullGeojson struct otherwise.
 func (c CombinedMultiple) AsFullGeojson() CombinedFullGeojson {
 	return c.CombinedFullGeojson
 }
