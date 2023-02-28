@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/ilder-as/go-barentswatch-ais/responsetype"
 	"net/http"
 	"reflect"
 	"regexp"
@@ -191,18 +192,10 @@ func unmarshalSSEData[T any](raw []byte) (T, error) {
 	return res, nil
 }
 
-type AisResponseType string
-
-const (
-	PositionType   AisResponseType = "Position"
-	AtonType                       = "Aton"
-	StaticdataType                 = "Staticdata"
-)
-
 // AisMultiple holds a union of the multiple response types that an AIS data request can return.
 // Use the Type property to inspect which type the message is.
 type AisMultiple struct {
-	Type AisResponseType
+	Type responsetype.ResponseType
 	Position
 	Aton
 	Staticdata
@@ -210,7 +203,7 @@ type AisMultiple struct {
 
 func (a *AisMultiple) UnmarshalJSON(data []byte) error {
 	typ := struct {
-		Type AisResponseType `json:"type"`
+		Type responsetype.ResponseType `json:"type"`
 	}{}
 	if err := json.Unmarshal(data, &typ); err != nil {
 		return err
@@ -219,11 +212,11 @@ func (a *AisMultiple) UnmarshalJSON(data []byte) error {
 	a.Type = typ.Type
 
 	switch a.Type {
-	case PositionType:
+	case responsetype.Position:
 		return json.Unmarshal(data, &a.Position)
-	case AtonType:
+	case responsetype.Aton:
 		return json.Unmarshal(data, &a.Aton)
-	case StaticdataType:
+	case responsetype.Staticdata:
 		return json.Unmarshal(data, &a.Staticdata)
 	default:
 		return fmt.Errorf("unknown type: %s", a.Type)
@@ -232,17 +225,17 @@ func (a *AisMultiple) UnmarshalJSON(data []byte) error {
 
 // IsPosition is true iff the AisMultiple message is of type Position
 func (a AisMultiple) IsPosition() bool {
-	return a.Type == PositionType
+	return a.Type == responsetype.Position
 }
 
 // IsAton is true iff the AisMultiple message is of type Aton
 func (a AisMultiple) IsAton() bool {
-	return a.Type == AtonType
+	return a.Type == responsetype.Aton
 }
 
 // IsStaticdata is true iff the AisMultiple message is of type Staticdata
 func (a AisMultiple) IsStaticdata() bool {
-	return a.Type == StaticdataType
+	return a.Type == responsetype.Staticdata
 }
 
 // IsZero is true iff the receiver is a default-valued AisMultiple struct.
