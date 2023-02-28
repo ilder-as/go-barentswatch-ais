@@ -22,22 +22,28 @@ const (
 
 var eof = errors.New("EOF")
 
+// IsEOF returns true iff the supplied error is an EOF error (i.e. signals the end of a stream).
 func IsEOF(err error) bool {
 	return errors.Is(err, eof)
 }
 
 type CancelFunc func()
 
+// Response is an API response which contains the given T data type.
 type Response[T any] struct {
 	*http.Response
 }
 
+// Unmarshal unmarshals the reponse body into a new object of type T.
 func (r Response[T]) Unmarshal() (T, error) {
 	var obj T
 	defer r.Body.Close()
 	return obj, json.NewDecoder(r.Body).Decode(&obj)
 }
 
+// StreamResponse is an API response whose body is a continuous stream of data.
+//
+// A StreamResponse can be consumed using the `UnmarshalStream` method.
 type StreamResponse[T any] struct {
 	*http.Response
 	streamType StreamType
@@ -45,6 +51,7 @@ type StreamResponse[T any] struct {
 	ctx        context.Context
 }
 
+// Error returns the underlying error or reason when a stream ends.
 func (r *StreamResponse[T]) Error() error {
 	return r.err
 }
@@ -214,14 +221,17 @@ func (a *AisMultiple) UnmarshalJSON(data []byte) error {
 	}
 }
 
+// IsPosition is true iff the AisMultiple message is of type Position
 func (a AisMultiple) IsPosition() bool {
 	return a.Type == PositionType
 }
 
+// IsAton is true iff the AisMultiple message is of type Aton
 func (a AisMultiple) IsAton() bool {
 	return a.Type == AtonType
 }
 
+// IsStaticdata is true iff the AisMultiple message is of type Staticdata
 func (a AisMultiple) IsStaticdata() bool {
 	return a.Type == StaticdataType
 }
@@ -260,6 +270,7 @@ type Position struct {
 	TrueHeading        *int      `json:"trueHeading"`
 }
 
+// IsZero is true iff the receiver is a default-valued Position struct.
 func (a Position) IsZero() bool {
 	return reflect.ValueOf(a).IsZero()
 }
@@ -282,6 +293,7 @@ type Aton struct {
 	TypeOfElectronicFixingDevice int       `json:"typeOfElectronicFixingDevice"`
 }
 
+// IsZero is true iff the receiver is a default-valued Aton struct.
 func (a Aton) IsZero() bool {
 	return reflect.ValueOf(a).IsZero()
 }
@@ -310,10 +322,13 @@ type Staticdata struct {
 	ReportClass              string    `json:"reportClass"`
 }
 
+// IsZero is true iff the receiver is a default-valued Staticdata struct.
 func (a Staticdata) IsZero() bool {
 	return reflect.ValueOf(a).IsZero()
 }
 
+// CombinedMultiple is a response which can be either CombinedSimpleJson, CombinedFullJson, CombinedSimpleGeojson or
+// CombinedFullGeojson. Which one it is depends on what was requested by the user, and must be checked on use.
 type CombinedMultiple struct {
 	Type string `json:"type"`
 	CombinedSimpleJson
@@ -322,6 +337,7 @@ type CombinedMultiple struct {
 	CombinedFullGeojson
 }
 
+// UnmarshalJSON unmarshals the supplied JSON data into a CombinedMultiple.
 func (c *CombinedMultiple) UnmarshalJSON(data []byte) error {
 	keys := make(map[string]json.RawMessage)
 	if err := json.Unmarshal(data, &keys); err != nil {
@@ -365,42 +381,56 @@ func (c *CombinedMultiple) UnmarshalJSON(data []byte) error {
 	}
 }
 
+// IsSimpleJson is true if the CombinedMultiple response's ModelType is "Simple" and ModelFormat is "Json"
 func (c CombinedMultiple) IsSimpleJson() bool {
 	return c.Type == "SimpleJson"
 }
 
+// IsFullJson is true if the CombinedMultiple response's ModelType is "Full" and ModelFormat is "Json"
 func (c CombinedMultiple) IsFullJson() bool {
 	return c.Type == "FullJson"
 }
 
+// IsFullGeojson is true if the CombinedMultiple response's ModelType is "Full" and ModelFormat is "Geojson"
 func (c CombinedMultiple) IsFullGeojson() bool {
 	return c.Type == "FullGeojson"
 }
 
+// IsSimpleGeojson is true if the CombinedMultiple response's ModelType is "Simple" and ModelFormat is "Geojson"
 func (c CombinedMultiple) IsSimpleGeojson() bool {
 	return c.Type == "SimpleGeojson"
 }
 
+// IsZero is true iff the receiver is a default-valued CombinedMultiple struct.
 func (c CombinedMultiple) IsZero() bool {
 	return reflect.ValueOf(c).IsZero()
 }
 
+// AsSimpleJson returns the underlying CombinedSimpleJson response data if the response is of the correct type,
+// and a zero (default-valued) CombinedSimpleJson struct otherwise.
 func (c CombinedMultiple) AsSimpleJson() CombinedSimpleJson {
 	return c.CombinedSimpleJson
 }
 
+// AsFullJson returns the underlying CombinedSimpleJson response data if the response is of the correct type,
+// and a zero (default-valued) CombinedSimpleJson struct otherwise.
 func (c CombinedMultiple) AsFullJson() CombinedFullJson {
 	return c.CombinedFullJson
 }
 
+// AsSimpleGeojson returns the underlying CombinedSimpleJson response data if the response is of the correct type,
+// and a zero (default-valued) CombinedSimpleJson struct otherwise.
 func (c CombinedMultiple) AsSimpleGeojson() CombinedSimpleGeojson {
 	return c.CombinedSimpleGeojson
 }
 
+// AsFullGeojson returns the underlying CombinedSimpleJson response data if the response is of the correct type,
+// and a zero (default-valued) CombinedSimpleJson struct otherwise.
 func (c CombinedMultiple) AsFullGeojson() CombinedFullGeojson {
 	return c.CombinedFullGeojson
 }
 
+// CombinedFullJson is a response to Combined when requesting ModelType "Full" and ModelFormat "Json"
 type CombinedFullJson struct {
 	CourseOverGround         *float64  `json:"courseOverGround"`
 	Latitude                 *float64  `json:"latitude"`
@@ -429,10 +459,12 @@ type CombinedFullJson struct {
 	ReportClass              string    `json:"reportClass"`
 }
 
+// IsZero is true iff the receiver is a default-valued CombinedFullJson struct.
 func (a CombinedFullJson) IsZero() bool {
 	return reflect.ValueOf(a).IsZero()
 }
 
+// CombinedSimpleJson is a response to Combined when requesting ModelType "Simple" and ModelFormat "Json"
 type CombinedSimpleJson struct {
 	CourseOverGround *float64  `json:"courseOverGround"`
 	Latitude         *float64  `json:"latitude"`
@@ -446,10 +478,12 @@ type CombinedSimpleJson struct {
 	Msgtime          time.Time `json:"msgtime"`
 }
 
+// IsZero is true iff the receiver is a default-valued CombinedSimpleJson struct.
 func (a CombinedSimpleJson) IsZero() bool {
 	return reflect.ValueOf(a).IsZero()
 }
 
+// CombinedFullGeojson is a response to Combined when requesting ModelType "Full" and ModelFormat "Geojson"
 type CombinedFullGeojson struct {
 	Type     string `json:"type"`
 	Geometry struct {
@@ -482,10 +516,12 @@ type CombinedFullGeojson struct {
 	} `json:"properties"`
 }
 
+// IsZero is true iff the receiver is a default-valued CombinedFullJson struct.
 func (a CombinedFullGeojson) IsZero() bool {
 	return reflect.ValueOf(a).IsZero()
 }
 
+// CombinedSimpleGeojson is a response to Combined when requesting ModelType "Simple" and ModelFormat "Geojson"
 type CombinedSimpleGeojson struct {
 	Type     string `json:"type"`
 	Geometry struct {
@@ -504,6 +540,7 @@ type CombinedSimpleGeojson struct {
 	} `json:"properties"`
 }
 
+// IsZero is true iff the receiver is a default-valued CombinedSimpleGeojson struct.
 func (a CombinedSimpleGeojson) IsZero() bool {
 	return reflect.ValueOf(a).IsZero()
 }
