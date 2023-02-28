@@ -7,7 +7,6 @@ import (
 	geojson "github.com/paulmach/go.geojson"
 	"net/http"
 	"net/url"
-	"strconv"
 	"time"
 )
 
@@ -166,8 +165,7 @@ type latestAisOption func(queryParams url.Values)
 
 func Since(t time.Time) latestAisOption {
 	return func(queryParams url.Values) {
-		since := strconv.Itoa(int(t.Unix()))
-		queryParams.Set("since", since)
+		queryParams.Set("since", t.Format(time.RFC3339))
 	}
 }
 
@@ -184,9 +182,11 @@ func (c *Client) GetLatestAisContext(ctx context.Context, opts ...latestAisOptio
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
+	params := req.URL.Query()
 	for _, opt := range opts {
-		opt(req.URL.Query())
+		opt(params)
 	}
+	req.URL.RawQuery = params.Encode()
 	res, err := c.httpClient.Do(req)
 	return Response[[]AisMultiple]{res}, err
 }
@@ -225,9 +225,11 @@ func (c *Client) GetLatestCombinedContext(ctx context.Context, opts ...latestAis
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.WithContext(ctx)
+	params := req.URL.Query()
 	for _, opt := range opts {
-		opt(req.URL.Query())
+		opt(params)
 	}
+	req.URL.RawQuery = params.Encode()
 	res, err := c.httpClient.Do(req)
 	return Response[[]Combined]{res}, err
 }

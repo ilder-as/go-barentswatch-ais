@@ -17,6 +17,9 @@ This project uses [Go's conventions for module version numbering](https://go.dev
 - Signatures of `UnmarshalStream` on `StreamResponse` and `SSEStreamResponse` have changed substantially. They no longer supply an error channel, errors are instead provided when the data channel closes, and can be checked with the `Error()` method. They also do not return cancellation functions anymore, cancellation is instead achieved by the user cancelling the request's context. 
 - `NewClient` now optionally takes a set of URLs for the HTTP endpoints.
 
+### Fixed
+- Incorrect query parameters generated in HTTP request in GetLatestAIS/GetLatestAISContext and GetLatestCombined/GetLatestCombinedContext
+
 ## [0.0.1] - 2023-02-17
 ### Added
 - Implementation of Barentswatch HTTP API as [documented](https://live.ais.barentswatch.net/index.html#/), both streams and queries.

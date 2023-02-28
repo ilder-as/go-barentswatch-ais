@@ -1,0 +1,1 @@
+{"type":"https://tools.ietf.org/html/rfc7231#section-6.5.1","title":"One or more validation errors occurred.","status":400,"traceId":"00-e92826d353e171cb2b30bb5875d0167b-b207c5a4b4d1e8ee-00","errors":{"":["Atleast one of IncludePosition, IncludeStatic, IncludeAton, IncludeSafetyRelated or IncludeBinaryBroadcastMetHyd must be true."]}}

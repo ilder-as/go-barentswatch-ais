@@ -1,0 +1,12 @@
+HTTP/2.0 400 Bad Request
+Connection: close
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Headers: DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,x-spa-name,x-spa-version,x-api-key
+Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS
+Access-Control-Allow-Origin: *
+Access-Control-Max-Age: 1728000
+Content-Type: application/problem+json; charset=utf-8
+Date: Mon, 20 Feb 2023 13:34:48 GMT
+Strict-Transport-Security: max-age=15724800; includeSubDomains
+
+{"type":"https://tools.ietf.org/html/rfc7231#section-6.5.1","title":"One or more validation errors occurred.","status":400,"traceId":"00-e07503fcb50515a1e63f19c85f5432f3-b78935e9acfd4afb-00","errors":{"":["Atleast one of IncludePosition, IncludeStatic, IncludeAton, IncludeSafetyRelated or IncludeBinaryBroadcastMetHyd must be true."]}}
