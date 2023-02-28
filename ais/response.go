@@ -20,6 +20,7 @@ const (
 	SSE
 )
 
+// eof is a sentinel error which indicates end of stream ("end of file")
 var eof = errors.New("EOF")
 
 // IsEOF returns true iff the supplied error is an EOF error (i.e. signals the end of a stream).
@@ -56,6 +57,7 @@ func (r *StreamResponse[T]) Error() error {
 	return r.err
 }
 
+// unmarshalDefault unmarshals streaming data sent as individual json objects
 func (r *StreamResponse[T]) unmarshalDefault() (<-chan T, error) {
 	scan := bufio.NewScanner(r.Body)
 	if scan == nil {
@@ -98,6 +100,7 @@ func (r *StreamResponse[T]) unmarshalDefault() (<-chan T, error) {
 	return out, nil
 }
 
+// unmarshalSSE unmarshals streaming data sent as Server Sent Events (SSE)
 func (r *StreamResponse[T]) unmarshalSSE() (<-chan T, error) {
 	scan := bufio.NewScanner(r.Body)
 	if scan == nil {
@@ -144,6 +147,12 @@ func (r *StreamResponse[T]) unmarshalSSE() (<-chan T, error) {
 	return out, nil
 }
 
+// UnmarshalStream unmarshals a stream of serialized data into the underlying data structure.
+//
+// The returned channel returns the next object unmarshalled. The channel only closes when it encounters an error,
+// or when the stream closes. Use StreamResponse.Error to check the reason for the closed stream. If UnmarshalStream
+// encounters an error, the underlying connection is closed. To continue consuming data, another api call must be made
+// to get a new StreamResponse.
 func (r *StreamResponse[T]) UnmarshalStream() (<-chan T, error) {
 	switch r.streamType {
 	case Simple:
@@ -160,7 +169,7 @@ var (
 	empty   = errors.New("empty")
 )
 
-// unmarshalSSEData
+// unmarshalSSEData unmarshals an SSE data stream
 func unmarshalSSEData[T any](raw []byte) (T, error) {
 	var res T
 
@@ -236,18 +245,25 @@ func (a AisMultiple) IsStaticdata() bool {
 	return a.Type == StaticdataType
 }
 
+// IsZero is true iff the receiver is a default-valued AisMultiple struct.
 func (a AisMultiple) IsZero() bool {
 	return reflect.ValueOf(a).IsZero()
 }
 
+// AsPosition returns the underlying Position response data if the response is of the correct type,
+// and a zero (default-valued) Position struct otherwise.
 func (a AisMultiple) AsPosition() Position {
 	return a.Position
 }
 
+// AsAton returns the underlying Aton response data if the response is of the correct type,
+// and a zero (default-valued) Aton struct otherwise.
 func (a AisMultiple) AsAton() Aton {
 	return a.Aton
 }
 
+// AsStaticdata returns the underlying Staticdata response data if the response is of the correct type,
+// and a zero (default-valued) Staticdata struct otherwise.
 func (a AisMultiple) AsStaticdata() Staticdata {
 	return a.Staticdata
 }
