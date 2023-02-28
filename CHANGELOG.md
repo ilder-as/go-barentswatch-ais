@@ -17,6 +17,7 @@ This project uses [Go's conventions for module version numbering](https://go.dev
 - The `SSEStreamResponse[T]` data type is merged into and replaced by the `StreamResponse[T]` data type.
 - The `Combined` data type is replaced by `CombinedSimpleJson` since these are identical.
 - `ModelType` and `ResponseType` as well as their associated constants are moved from the ais package to dedicated packages, in line with other similar data types. 
+- Response types for `Combined` placed in responsetype package.
 - Response data types now embed `*http.Response` instead of type aliasing it, for a simplicity and extensibility.
 - Signatures of `UnmarshalStream` on `StreamResponse` and `SSEStreamResponse` have changed substantially. They no longer supply an error channel, errors are instead provided when the data channel closes, and can be checked with the `Error()` method. They also do not return cancellation functions anymore, cancellation is instead achieved by the user cancelling the request's context. 
 - `NewClient` now optionally takes a set of URLs for the HTTP endpoints.

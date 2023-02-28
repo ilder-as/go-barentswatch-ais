@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/ilder-as/go-barentswatch-ais/ais"
 	"github.com/ilder-as/go-barentswatch-ais/ais/option"
+	"github.com/ilder-as/go-barentswatch-ais/responsetype"
 	"golang.org/x/oauth2"
 	"io"
 	"net/http"
@@ -199,7 +200,7 @@ func Test_PostCombined_FullGeojson(t *testing.T) {
 
 	numResults := 0
 	for a := range ch {
-		if !a.IsFullGeojson() {
+		if a.Type != responsetype.FullGeojson {
 			t.Error("message type not recognized as FullGeojson")
 		} else if a.AsFullGeojson().IsZero() {
 			t.Error("message unmarshalled to empty message")
@@ -238,7 +239,7 @@ func Test_PostCombined_FullJson(t *testing.T) {
 	}
 
 	for a := range ch {
-		if !a.IsFullJson() {
+		if a.Type != responsetype.FullJson {
 			t.Error("message type not recognized as FullJson")
 		} else if a.AsFullJson().IsZero() {
 			t.Error("message unmarshalled to empty message")
@@ -272,7 +273,7 @@ func Test_PostCombined_SimpleGeoson(t *testing.T) {
 	}
 
 	for a := range ch {
-		if !a.IsSimpleGeojson() {
+		if a.Type != responsetype.SimpleGeojson {
 			t.Error("message type not recognized as SimpleGeojson")
 		} else if a.AsSimpleGeojson().IsZero() {
 			t.Error("message unmarshalled to empty message")
@@ -306,7 +307,7 @@ func Test_PostCombined_SimpleJson(t *testing.T) {
 	}
 
 	for a := range ch {
-		if !a.IsSimpleJson() {
+		if a.Type != responsetype.SimpleJson {
 			t.Error("message type not recognized as SimpleJson")
 		} else if a.AsSimpleJson().IsZero() {
 			t.Error("message unmarshalled to empty message")

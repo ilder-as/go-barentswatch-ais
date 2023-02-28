@@ -195,7 +195,7 @@ func unmarshalSSEData[T any](raw []byte) (T, error) {
 // AisMultiple holds a union of the multiple response types that an AIS data request can return.
 // Use the Type property to inspect which type the message is.
 type AisMultiple struct {
-	Type responsetype.ResponseType
+	Type responsetype.Ais
 	Position
 	Aton
 	Staticdata
@@ -203,7 +203,7 @@ type AisMultiple struct {
 
 func (a *AisMultiple) UnmarshalJSON(data []byte) error {
 	typ := struct {
-		Type responsetype.ResponseType `json:"type"`
+		Type responsetype.Ais `json:"type"`
 	}{}
 	if err := json.Unmarshal(data, &typ); err != nil {
 		return err
@@ -324,7 +324,7 @@ func (a Staticdata) IsZero() bool {
 // CombinedMultiple is a response which can be either CombinedSimpleJson, CombinedFullJson, CombinedSimpleGeojson or
 // CombinedFullGeojson. Which one it is depends on what was requested by the user, and must be checked on use.
 type CombinedMultiple struct {
-	Type string `json:"type"`
+	Type responsetype.Combined `json:"type"`
 	CombinedSimpleJson
 	CombinedFullJson
 	CombinedSimpleGeojson
@@ -358,41 +358,21 @@ func (c *CombinedMultiple) UnmarshalJSON(data []byte) error {
 
 	if isGeojson {
 		if isFull {
-			c.Type = "FullGeojson"
+			c.Type = responsetype.FullGeojson
 			return json.Unmarshal(data, &c.CombinedFullGeojson)
 		} else {
-			c.Type = "SimpleGeojson"
+			c.Type = responsetype.SimpleGeojson
 			return json.Unmarshal(data, &c.CombinedSimpleGeojson)
 		}
 	} else {
 		if isFull {
-			c.Type = "FullJson"
+			c.Type = responsetype.FullJson
 			return json.Unmarshal(data, &c.CombinedFullJson)
 		} else {
-			c.Type = "SimpleJson"
+			c.Type = responsetype.SimpleJson
 			return json.Unmarshal(data, &c.CombinedSimpleJson)
 		}
 	}
-}
-
-// IsSimpleJson is true if the CombinedMultiple response's ModelType is "Simple" and ModelFormat is "Json"
-func (c CombinedMultiple) IsSimpleJson() bool {
-	return c.Type == "SimpleJson"
-}
-
-// IsFullJson is true if the CombinedMultiple response's ModelType is "Full" and ModelFormat is "Json"
-func (c CombinedMultiple) IsFullJson() bool {
-	return c.Type == "FullJson"
-}
-
-// IsFullGeojson is true if the CombinedMultiple response's ModelType is "Full" and ModelFormat is "Geojson"
-func (c CombinedMultiple) IsFullGeojson() bool {
-	return c.Type == "FullGeojson"
-}
-
-// IsSimpleGeojson is true if the CombinedMultiple response's ModelType is "Simple" and ModelFormat is "Geojson"
-func (c CombinedMultiple) IsSimpleGeojson() bool {
-	return c.Type == "SimpleGeojson"
 }
 
 // IsZero is true iff the receiver is a default-valued CombinedMultiple struct.
