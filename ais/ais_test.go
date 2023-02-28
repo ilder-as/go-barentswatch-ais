@@ -3,7 +3,6 @@ package ais_test
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -154,8 +153,6 @@ func Test_PostAis_NoneIncluded(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	fmt.Println(stream.Response.Status)
 
 	t.SkipNow()
 
