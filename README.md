@@ -1,4 +1,6 @@
 # Barentswatch AIS 
+[![GoDoc](https://img.shields.io/badge/pkg.go.dev-doc-blue)](https://pkg.go.dev/github.com/ilder-as/go-barentswatch-ais@v0.0.2/ais)
+
 ## About 
 This is a Go implementation of [Barentswatch' AIS API](https://live.ais.barentswatch.net/index.html#/), which supplies
 live data from Automatic Identification Systems (AIS) from marine vessels along the Norwegian coast.
