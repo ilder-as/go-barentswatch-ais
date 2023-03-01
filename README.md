@@ -1,4 +1,5 @@
 # Barentswatch AIS 
+[![Build Status](https://app.travis-ci.com/ilder-as/go-barentswatch-ais.svg?branch=main)](https://app.travis-ci.com/ilder-as/go-barentswatch-ais)
 [![GoDoc](https://img.shields.io/badge/pkg.go.dev-doc-blue)](https://pkg.go.dev/github.com/ilder-as/go-barentswatch-ais@v0.0.2/ais)
 
 ## About 
